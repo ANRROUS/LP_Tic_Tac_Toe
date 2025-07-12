@@ -48,7 +48,6 @@ def consult_board_size(board_size: int) -> None:
     prolog.consult(sized_file_name)
     currently_consulted = sized_file_name
 
-
 def make_move(board: List[List], difficulty_level: int, player_symbol: str) -> List[List]:
     """
     Function receives board + difficulty_level and makes necessary call
@@ -64,12 +63,14 @@ def make_move(board: List[List], difficulty_level: int, player_symbol: str) -> L
 
     consult_board_size(len(board))
     prolog_query = f"miniMax({difficulty_level}, {OTHER_PLAYER_SYMBOL(player_symbol)}, {prolog_board}, BestMove)"
-    query_result = list(prolog.query(prolog_query, maxresult=1))[0].get("BestMove")
+    results = list(prolog.query(prolog_query, maxresult=1))
+    if not results:
+        raise ValueError(f"No se encontró ningún movimiento válido desde Prolog.\nConsulta: {prolog_query}")
+    query_result = results[0].get("BestMove")
 
     # Return result
     result = prolog_to_board(query_result, len(board))
     return result
-
 
 def check_is_winner(board: List[List], player_symbol: str) -> Optional[bool]:
     """
@@ -93,7 +94,6 @@ def check_is_winner(board: List[List], player_symbol: str) -> Optional[bool]:
         return False
 
     return None
-
 
 def board_to_prolog(board: List[List]) -> str:
     """
@@ -119,7 +119,6 @@ def prolog_to_board(board: List, board_size: int) -> List[List]:
     iterator = iter(board_str_list)
     result = [list(islice(iterator, board_size)) for _ in range(board_size)]
     return result
-
 
 def generate_prolog_statements(board_size: int):
     """
