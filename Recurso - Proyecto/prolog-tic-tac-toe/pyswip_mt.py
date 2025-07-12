@@ -1,14 +1,8 @@
-"""
-A solution for running Prolog in a multithreaded environment (Flask in our case).
-Based on https://github.com/yuce/pyswip/issues/3#issuecomment-355458825
-"""
 import ctypes
 import pyswip
 
 class PrologMT(pyswip.Prolog):
-    """
-    Multi-threaded (one-to-one) pyswip.Prolog ad-hoc reimpl
-    """
+
     _swipl = pyswip.core._lib
 
     PL_thread_self = _swipl.PL_thread_self
