@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap&subset=latin-ext"
     rel="stylesheet">
-    <link rel="icon" href="./assets/img/icon.jpg">
+  <link rel="icon" href="./assets/img/icon.jpg">
   <title>Tic Tac Toe</title>
   <style>
     * {
@@ -754,51 +754,18 @@
           }, 100);
         },
         checkGameStatus() {
-          // Verificar si hay ganador
-          const winner = this.checkWinner();
-          if (winner) {
-            this.showInfoModal(winner === this.playerSymbol ? "¡Ganaste!" : "¡La IA ganó!");
-          } else if (this.isBoardFull()) {
-            this.showInfoModal("¡Empate!");
-          }
-        },
-        checkWinner() {
-          const board = this.board;
-          const size = this.boardSize;
 
-          // Verificar filas
-          for (let i = 0; i < size; i++) {
-            if (board[i][0] && board[i].every(cell => cell === board[i][0])) {
-              return board[i][0];
-            }
-          }
-
-          // Verificar columnas
-          for (let j = 0; j < size; j++) {
-            const column = [];
-            for (let i = 0; i < size; i++) {
-              column.push(board[i][j]);
-            }
-            if (column[0] && column.every(cell => cell === column[0])) {
-              return column[0];
-            }
-          }
-
-          // Verificar diagonales
-          const diag1 = [];
-          const diag2 = [];
-          for (let i = 0; i < size; i++) {
-            diag1.push(board[i][i]);
-            diag2.push(board[i][size - 1 - i]);
-          }
-          if (diag1[0] && diag1.every(cell => cell === diag1[0])) {
-            return diag1[0];
-          }
-          if (diag2[0] && diag2.every(cell => cell === diag2[0])) {
-            return diag2[0];
-          }
-
-          return null;
+          axios.post("/api/is_winner", this.postJsonData())
+            .then(response => {
+              const winner = response.data.result;
+              if (winner != null) {
+                this.showInfoModal(
+                  winner === true ? "¡Ganaste!" : "¡La IA ganó!" 
+                );
+              } else if (this.isBoardFull()) {
+                this.showInfoModal("¡Empate!");
+              }
+            });
         },
         isBoardFull() {
           for (let i = 0; i < this.boardSize; i++) {
